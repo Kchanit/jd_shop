@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "531310409979",
+    "project_id": "jd-shop-fde05",
+    "storage_bucket": "jd-shop-fde05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:531310409979:android:8076a9242a9fa08c9ad85e",
+        "android_client_info": {
+          "package_name": "com.jaydee.jd_shop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "531310409979-ln06m36i8v4scto96vmfru06rfjk22as.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMsexK1oY6UTQmovTX3X6gcZ1aHLPlyiM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "531310409979-ln06m36i8v4scto96vmfru06rfjk22as.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
