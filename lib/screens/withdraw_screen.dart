@@ -8,7 +8,7 @@ import 'package:jd_shop/widgets/main_btn_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart';
 import '../model/transaction_model.dart';
 
 class WithdrawScreen extends StatefulWidget {
@@ -239,17 +239,22 @@ class _WithdrawScreenState extends State<WithdrawScreen> {
     );
   }
 
-  createTransaction() {
+createTransaction() {
     final databaseService =
         Provider.of<DatabaseService>(context, listen: false);
-    String datetime = DateTime.now().toString();
+    var now = DateTime.now();
+    String date = DateFormat.yMd().format(now).toString();
+    String time = DateFormat.Hm().format(now).toString();
+    String datetime = DateTime.now().toUtc().toString();
+    // String datetime = DateTime.now().toString();
     String unixTime = DateTime.now().toUtc().millisecondsSinceEpoch.toString();
     String name = user!.username.replaceAll(" ", "");
     final newTransaction = Transaction(
       buyerUid: user!.uid,
       price: topup.toDouble(),
       type: Transaction.getTransactionType(transactionCategory!),
-      time: datetime,
+      date: date,
+      time: time,
       transactionID: '${name}${topup}${unixTime}',
     );
     databaseService.addTransaction(transaction: newTransaction);

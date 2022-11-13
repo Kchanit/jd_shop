@@ -42,7 +42,7 @@ class Product {
         description = productMap['description'] ?? '',
         name = productMap['name'],
         photoURL = productMap['photoURL'] ?? '',
-        price = productMap['price'].toDouble(),
+        price = productMap['price'],
         quantity = productMap['quantity'],
         type = getProductType(productMap['type']);
 

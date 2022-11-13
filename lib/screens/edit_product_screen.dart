@@ -119,7 +119,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     child: Center(
                         child: '${product.photoURL}' != ""
                             ? Image.network('${product.photoURL}',
-                                width: 153, height: 153, fit: BoxFit.cover)
+                              fit: BoxFit.cover)
                             : Container(
                                 decoration: BoxDecoration(color: kColorsRed))),
                   ),
@@ -128,19 +128,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
             ),
             Expanded(
                 child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 35, vertical: 20),
+              padding: EdgeInsets.symmetric(horizontal: 5, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    '${product.type!.name.toString()}',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600,
-                        color: kColorsGrey),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 25),
+                    child: Text(
+                      '${product.type!.name.toString()}',
+                      style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: kColorsGrey,
+                          ),
+                    ),
                   ),
                   SizedBox(
                     height: 15,
@@ -149,6 +150,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 40),
                     child: TextFormField(
+                        initialValue: "${product.name}",
                         keyboardType: TextInputType.text,
                         autofocus: false,
                         style: Theme.of(context).textTheme.subtitle1,
@@ -161,16 +163,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         onChanged: (value) {
                           newProduct.name = value;
                         },
-                        decoration:
-                            InputDecoration(hintText: "${product.name}")),
+                        decoration: InputDecorationWidget(context, 'Name'),),
                   ),
                   SizedBox(
-                    height: 15,
+                    height: 7,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 40),
                     child: TextFormField(
+                        initialValue: "${product.price}",
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly
@@ -184,18 +186,20 @@ class _EditProductScreenState extends State<EditProductScreen> {
                           return null;
                         },
                         onChanged: (value) {
-                          newProduct.price = double.parse(value);
+                          // newProduct.price = double.parse(value);
+                          var temp = int.parse(value);
+                          newProduct.price = temp.toDouble();
                         },
-                        decoration:
-                            InputDecorationWidget(context, "${product.price}")),
+                        decoration: InputDecorationWidget(context, 'Price')),
                   ),
                   SizedBox(
-                    height: 12,
+                    height: 7,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 40),
                     child: TextFormField(
+                      initialValue: "${product.quantity}",
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly
@@ -211,16 +215,16 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         onChanged: (value) {
                           newProduct.quantity = int.parse(value);
                         },
-                        decoration: InputDecorationWidget(
-                            context, "${product.quantity}")),
+                        decoration: InputDecorationWidget(context, 'Quantity')),
                   ),
                   SizedBox(
-                    height: 12,
+                    height: 7,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 10, horizontal: 40),
                     child: TextFormField(
+                        initialValue: "${product.description}",
                         keyboardType: TextInputType.text,
                         autofocus: false,
                         style: Theme.of(context).textTheme.subtitle1,
@@ -233,8 +237,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                         onChanged: (value) {
                           newProduct.description = value;
                         },
-                        decoration: InputDecorationWidget(
-                            context, "${product.description}")),
+                        decoration: InputDecorationWidget(context, 'Description')),
                   ),
                   SizedBox(
                     height: 12,
@@ -277,7 +280,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       );
                     },
                     child: MainBtnWidget(
-                        colorBtn: Colors.green,
+                        colorBtn: kColorsPurple,
                         textBtn: 'Save',
                         isTransparent: false,
                         haveIcon: false),

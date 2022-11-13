@@ -56,13 +56,24 @@ class DatabaseService {
           .map((doc) => Product.fromMap(productMap: doc.data()))
           .toList());
 
-  Stream<List<tran.Transaction>> getStreamListTransaction() => _firebaseStore
-      .collection('transactions')
+  Stream<List<tran.Transaction>> getStreamListTransaction({required userId}) => _firebaseStore
+      .collection('transactions').orderBy('date', descending: false)
       .snapshots()
       .map((snapshot) => snapshot.docs
           .map((doc) => tran.Transaction.fromMap(transactionMap: doc.data()))
           .toList());
+  // sortTransaction({required List<tran.Transaction> transaction_list}){
 
+  // }
+  // sortTimeTransaction(tran.Transaction a, tran.Transaction b){
+  //   var aTime = DateTime.parse(a.time);
+  //   var bTime = DateTime.parse(b.time);
+  //   int comp = aTime.compareTo(bTime);
+  //   if(comp == 0){
+  //     return -aTime.compareTo(bTime);
+  //   }
+  //   return comp;
+  // }
   Future<void> addProduct({required Product product}) async {
     // final docProduct = _firebaseStore.collection('products').doc();
     // final Map<String, dynamic> productInfo = product.toMap();

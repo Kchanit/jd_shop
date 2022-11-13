@@ -58,10 +58,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       setState(() {
         user = currentUser;
       });
+      if (user!.role == 'user') {
+        _addBtnVisible = false;
+      }
     });
-    if (user!.role == 'user') {
-      _addBtnVisible = false;
-    }
 
     //fscaf
     return Scaffold(

@@ -25,7 +25,7 @@ class User {
       role = userMap['role'],
       phone = userMap['phone'],
       address = userMap['address'],
-      coin = userMap['coin'];
+      coin = userMap['coin'].toDouble();
 
   Map<String, dynamic> toMap() => {
     'uid': uid,

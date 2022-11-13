@@ -21,11 +21,13 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   User? user;
-  final controller = Get.put(LoginController());
+
   @override
   Widget build(BuildContext context) {
     final authService = Provider.of<AuthService>(context, listen: false);
+
     authService.currentUser().then((currentUser) {
+      if (!mounted) return;
       setState(() {
         user = currentUser;
       });
@@ -39,15 +41,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         toolbarHeight: 60,
         leading: IconButton(
           icon: SvgPicture.asset('assets/icons/back.svg', color: kColorsWhite),
-          onPressed: () {
+          onPressed: (){
             Navigator.pop(context);
           },
         ),
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: SvgPicture.asset('assets/icons/msg.svg',
-                  color: kColorsWhite)),
+            onPressed: (){},
+            icon: SvgPicture.asset('assets/icons/msg.svg', color: kColorsWhite)
+          ),
+          IconButton(
+            onPressed: (){
+              Navigator.pushNamed(context, '/profile');
+            },
+            icon: SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite)
+          )
         ],
       ),
       body: SingleChildScrollView(
@@ -57,19 +65,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
             profileAndCoin(),
             setting(),
             Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: InkWell(
-                    onTap: () {
-                      logoutHandle(context: context);
-
-                      Navigator.of(context)
-                          .pushNamedAndRemoveUntil('/login', (route) => false);
-                    },
-                    child: MainBtnWidget(
-                        colorBtn: kColorsRed,
-                        textBtn: 'Logout',
-                        isTransparent: false,
-                        haveIcon: false)))
+              padding: const EdgeInsets.symmetric(vertical: 20),
+              child: InkWell(
+                onTap: (){
+                  LogoutHandle(context: context);
+                },
+                child: MainBtnWidget(colorBtn: kColorsRed, textBtn: 'Logout', isTransparent: false, haveIcon: false)
+              )
+            )
           ],
         ),
       ),
@@ -88,44 +91,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
           height: 180,
           width: double.infinity,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
-              color: kColorsPurple),
+            borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+            color: kColorsPurple
+          ),
         ),
         Padding(
           padding: const EdgeInsets.all(20),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              CircleAvatar(
-                backgroundImage: Image.network(
-                        controller.googleAccount.value?.photoUrl ?? '')
-                    .image,
+              Container(
+                height: 100,
+                width: 100,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: kColorsCream
+                ),
               ),
-              // Container(
-              //   height: 100,
-              //   width: 100,
-              //   decoration:
-              //       BoxDecoration(shape: BoxShape.circle, color: kColorsCream),
-              // ),
               SizedBox(width: 20),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Text('Hi! ${user?.displayName ?? 'Unknown Name'}', style: Theme.of(context).textTheme.headline3),
-                  Text(
-                      '${auth.FirebaseAuth.instance.currentUser!.displayName ?? user?.username}', // use auth
-                      style: Theme.of(context).textTheme.headline6),
-                  // Text('${user?.username ?? controller.googleAccount.value?.displayName ?? ''}', //use controller
-                  // style: Theme.of(context).textTheme.headline6,),
+                  Text('Hi! ${user?.username}', style: Theme.of(context).textTheme.headline3),
                   SizedBox(height: 10),
-                  // Text('${user?.email ?? controller.googleAccount.value?.email ?? ''}',
-                  Text(
-                      '${user?.email ?? auth.FirebaseAuth.instance.currentUser!.email ?? ''}',
-                      style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.w400,
-                          color: kColorsWhite,
-                          fontFamily: 'Inter')),
+                  Text('Email: ${user?.email ?? 'Unknown Email'}', 
+                  style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w400, color: kColorsWhite, fontFamily: 'Inter')),
                 ],
               )
             ],
@@ -144,31 +134,29 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     height: 155,
                     width: MediaQuery.of(context).size.width - 40,
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
-                        color: kColorsWhite,
-                        boxShadow: [
-                          BoxShadow(
-                            color: kColorsBlack.withOpacity(0.25),
-                            spreadRadius: 0,
-                            blurRadius: 4,
-                            offset: Offset(0, 4),
-                          ),
-                        ]),
+                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      color: kColorsWhite,
+                      boxShadow: [
+                        BoxShadow(
+                          color: kColorsBlack.withOpacity(0.25),
+                          spreadRadius: 0,
+                          blurRadius: 4,
+                          offset: Offset(0, 4),
+                        ),
+                      ]
+                    ),
                   ),
                 ),
               ),
               Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                 child: Column(
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text('My Coin',
-                            style: Theme.of(context).textTheme.headline4),
-                        Text('\$ ${user?.coin ?? 'unknown'}',
-                            style: Theme.of(context).textTheme.subtitle1),
+                        Text('My Coin', style: Theme.of(context).textTheme.headline4),
+                        Text('\$ ${user?.coin ?? 'unknown'}', style: Theme.of(context).textTheme.subtitle1),
                       ],
                     ),
                     Padding(
@@ -183,30 +171,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Expanded(
                           child: InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/withdraw');
-                              },
-                              child: CoinMenuWidget(
-                                  iconBtn: 'assets/icons/withdraw.svg',
-                                  textBtn: 'Withdraw')),
+                            onTap: (){
+                              Navigator.pushNamed(context, '/withdraw');
+                            },
+                            child: CoinMenuWidget(iconBtn: 'assets/icons/withdraw.svg', textBtn: 'Withdraw')
+                          ),
                         ),
                         Expanded(
                           child: InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/top-up');
-                              },
-                              child: CoinMenuWidget(
-                                  iconBtn: 'assets/icons/top_up.svg',
-                                  textBtn: 'Top Up')),
+                            onTap: (){
+                              Navigator.pushNamed(context, '/top-up');
+                            },
+                            child: CoinMenuWidget(iconBtn: 'assets/icons/top_up.svg', textBtn: 'Top Up')
+                          ),
                         ),
                         Expanded(
                           child: InkWell(
-                              onTap: () {
-                                Navigator.pushNamed(context, '/transaction');
-                              },
-                              child: CoinMenuWidget(
-                                  iconBtn: 'assets/icons/transaction.svg',
-                                  textBtn: 'Transaction')),
+                            onTap: (){
+                              Navigator.pushNamed(context, '/transaction');
+                            },
+                            child: CoinMenuWidget(iconBtn: 'assets/icons/transaction.svg', textBtn: 'Transaction')
+                          ),
                         ),
                       ],
                     )
@@ -219,6 +204,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ],
     );
   }
+
 
   // Create Setting Menu
   Widget setting() {
@@ -245,6 +231,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
 
               // TO DO: Create setting menu
+              
             ],
           ),
         )
@@ -252,10 +239,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Future<void> logoutHandle({required BuildContext context}) async {
+  Future<void> LogoutHandle({required BuildContext context}) async {
     final authService = Provider.of<AuthService>(context, listen: false);
-
-    try {
+    
+    try{
       await authService.signOut();
       Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
     } on auth.FirebaseAuthException catch (e) {

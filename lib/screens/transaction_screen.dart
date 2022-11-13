@@ -1,5 +1,5 @@
 import 'package:jd_shop/model/transaction_model.dart';
-import 'package:jd_shop/services/auth_service.dart';
+// import 'package:jd_shop/services/auth_service.dart';
 import 'package:jd_shop/services/database_service.dart';
 import 'package:jd_shop/themes/color.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../model/user_model.dart';
+import '../services/auth_service.dart';
 
 class TransactionScreen extends StatefulWidget {
   TransactionScreen({Key? key}) : super(key: key);
@@ -19,18 +20,27 @@ class _TransactionScreenState extends State<TransactionScreen> {
   User? user;
 
   List<Transaction?>? item = [];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final authservice = Provider.of<AuthService>(context, listen: false);
+      User? newUser = await authservice.currentUser();
+      setState(() {
+        user = newUser;
+      });
+      print(user!.uid);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final databaseService =
         Provider.of<DatabaseService>(context, listen: false);
+
     final authService = Provider.of<AuthService>(context, listen: false);
-    authService.currentUser().then((currentUser) {
-      if (!mounted) return;
-      setState(() {
-        user = currentUser;
-      });
-    });
+
     return Scaffold(
       backgroundColor: kColorsCream,
       appBar: AppBar(
@@ -52,7 +62,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   color: kColorsWhite)),
           IconButton(
               onPressed: () {
-                Navigator.pushNamed(context, '/profile-screen');
+                Navigator.pushNamed(context, '/profile');
               },
               icon:
                   SvgPicture.asset('assets/icons/me.svg', color: kColorsWhite))
@@ -100,102 +110,151 @@ class _TransactionScreenState extends State<TransactionScreen> {
                   padding:
                       const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Latest Transactions',
-                          style: Theme.of(context).textTheme.headline4),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
-                        child: Container(
-                          height: 1.5,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(color: kColorsCream),
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Latest Transactions',
+                            style: Theme.of(context).textTheme.headline4),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Container(
+                            height: 1.5,
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(color: kColorsCream),
+                          ),
                         ),
-                      ),
-                      StreamBuilder<List<Transaction?>>(
-                        stream: databaseService.getStreamListTransaction(),
-                        builder: ((context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Center(
-                                child: Column(
-                              children: [
-                                Text('An error occure.'),
-                                Text('${snapshot.error}')
-                              ],
-                            ));
-                          }
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: Text('No Transaction'),
-                            );
-                          } else {
-                            int i = 0;
-                            while (i < snapshot.data!.length) {
-                              if (snapshot.data![i]!.buyerUid == user!.uid) { //why user is null wtf?
-                                item!.add(snapshot.data![i]!);
-                              }
-                            }
+                        // TO DO: Create transaction
 
-                            return SizedBox(
-                              height: 500,
-                              child: ListView.builder(
-                                itemCount: snapshot.data!.length,
-                                itemBuilder: (context, index) {
-                                  return Column(
+                        if (user != null)
+                          StreamBuilder<List<Transaction>>(
+                              stream: databaseService.getStreamListTransaction(
+                                  userId: user!.uid),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasError) {
+                                  return Center(
+                                      child: Column(
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(2.0),
-                                        child: Row(
-                                          // mainAxisAlignment:  MainAxisAlignment.start,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Row(children: [
-                                              SvgPicture.asset(
-                                                  'assets/icons/withdraw.svg',
-                                                  color: kColorsPurple),
-                                              SizedBox(
-                                                width: 15,
-                                              ),
-                                              Text(
-                                                '${item![index]!.type!.name.toString()}',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle1,
-                                              ),
-                                            ]),
-                                            // SizedBox(
-                                            //   width: 100,
-                                            // ),
-                                            Text("\$ ${item![index]!.price}",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .subtitle1,
-                                                textAlign: TextAlign.right)
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 20),
-                                        child: Container(
-                                          height: 1.5,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                              color: kColorsCream),
-                                        ),
-                                      ),
+                                      Text('An error occure.'),
+                                      Text('${snapshot.error}')
                                     ],
+                                  ));
+                                }
+
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: Text('No Transaction'),
                                   );
-                                },
-                              ),
-                            );
-                          }
-                        }),
-                      )
-                    ],
-                  ),
+                                } else {
+                                  int i = 0;
+                                  while (i < snapshot.data!.length) {
+                                    if (snapshot.data![i].buyerUid ==
+                                        user!.uid) {
+                                      //why user is null wtf?
+
+                                      // var t = DateTime.parse(item![index]!.time.toString());
+                                      // var d = DateTime.parse(item![index]!.date.toString());
+                                      // snapshot.data[];
+                                      item!.add(snapshot.data![i]);
+                                    }
+                                    i++;
+                                  }
+
+                                  return SizedBox(
+                                    height: 500,
+                                    child: ListView.builder(
+                                      itemCount: snapshot.data!.length,
+                                      itemBuilder: (context, index) {
+                                        return Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(0.0),
+                                              child: Row(
+                                                // mainAxisAlignment:  MainAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Row(children: [
+                                                    SvgPicture.asset(
+                                                        'assets/icons/${item![index]!.type!.name.toString()}.svg',
+                                                        color: kColorsPurple),
+                                                    SizedBox(
+                                                      width: 15,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          '${item![index]!.type!.name.toString()}',
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .subtitle1,
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            // Text(
+                                                            //   '${item![index]!.time}',
+                                                            //   style: Theme.of(
+                                                            //           context)
+                                                            //       .textTheme
+                                                            //       .bodyText1,
+                                                            // ),
+                                                            // SizedBox(
+                                                            //   width: 10,
+                                                            //   height: 10,
+                                                            // ),
+                                                            Text(
+                                                              '${item![index]!.date}',
+                                                              style: Theme.of(
+                                                                      context)
+                                                                  .textTheme
+                                                                  .bodyText1,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                  ]),
+                                                  // SizedBox(
+                                                  //   width: 100,
+                                                  // ),
+                                                  Text(
+                                                      "\$${item![index]!.price}",
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .subtitle1,
+                                                      textAlign:
+                                                          TextAlign.right)
+                                                ],
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 20),
+                                              child: Container(
+                                                height: 1.5,
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                decoration: BoxDecoration(
+                                                    color: kColorsCream),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                  );
+                                }
+                              }),
+                      ]),
                 ),
               ],
             ),

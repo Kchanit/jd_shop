@@ -8,7 +8,7 @@ import 'package:jd_shop/themes/color.dart';
 import 'package:jd_shop/utils/showSnackBar.dart';
 import 'package:jd_shop/widgets/main_btn_widget.dart';
 import 'package:provider/provider.dart';
-
+import 'package:intl/intl.dart';
 import '../model/transaction_model.dart';
 
 class ProductInfoScreen extends StatefulWidget {
@@ -22,6 +22,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
   User? user;
   bool _addBtnVisible = true;
   String? transactionCategory = 'buy';
+
   @override
   Widget build(BuildContext context) {
     final product = ModalRoute.of(context)!.settings.arguments as Product;
@@ -29,14 +30,13 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
     final databaseService =
         Provider.of<DatabaseService>(context, listen: false);
     authService.currentUser().then((currentUser) {
-      if (!mounted) return;
       setState(() {
         user = currentUser;
       });
+      if (user!.role == 'user') {
+        _addBtnVisible = false;
+      }
     });
-    if (user!.role == 'user') {
-      _addBtnVisible = false;
-    }
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -108,7 +108,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                 child: Center(
                     child: '${product.photoURL}' != ""
                         ? Image.network('${product.photoURL}',
-                            width: 153, height: 153, fit: BoxFit.cover)
+                            fit: BoxFit.cover)
                         : Container(
                             decoration: BoxDecoration(color: kColorsRed))),
               ),
@@ -172,7 +172,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                       color: kColorsPurple),
                 ),
                 SizedBox(
-                  height: 12,
+                  height: 25,
                 ),
                 InkWell(
                   onTap: () {
@@ -199,7 +199,13 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                               final databaseService =
                                   Provider.of<DatabaseService>(context,
                                       listen: false);
-                              String datetime = DateTime.now().toString();
+                              var now = DateTime.now();
+                              String date =
+                                  DateFormat.yMd().format(now).toString();
+                              String time =
+                                  DateFormat.Hm().format(now).toString();
+                              String datetime =
+                                  DateTime.now().toUtc().toString();
 
                               String name = user!.username.replaceAll(" ", "");
                               final newTransaction = Transaction(
@@ -208,23 +214,30 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                 type: Transaction.getTransactionType(
                                     transactionCategory!),
                                 productUid: product.uid,
-                                time: datetime,
+                                date: date,
+                                time: time,
+                                transactionID: '',
                               );
-                              databaseService.addTransaction(
-                                  transaction: newTransaction);
 
-                              databaseService
-                                  .updateUserFromUid(
-                                      uid: user!.uid, user: user!)
-                                  .then((value) {
-                                //success state
-                                showSnackBar('success',
-                                    backgroundColor: Colors.green);
-                              }).catchError((e) {
-                                //handle error
-                                showSnackBar(e, backgroundColor: Colors.red);
-                              });
-                              Navigator.pop(context, 'Ok');
+                              if (product.price <= user!.coin!) {
+                                databaseService.addTransaction(
+                                    transaction: newTransaction);
+                                databaseService
+                                    .updateUserFromUid(
+                                        uid: user!.uid, user: user!)
+                                    .then((value) {
+                                  //success state
+                                  showSnackBar('success',
+                                      backgroundColor: Colors.green);
+                                }).catchError((e) {
+                                  //handle error
+                                  showSnackBar(e, backgroundColor: Colors.red);
+                                });
+                                Navigator.pop(context, 'Ok');
+                              }else if(product.price > user!.coin!){
+                                showSnackBar('Insufficient funds.', backgroundColor: Colors.red);
+                                Navigator.pop(context, 'Ok');
+                              }
                             },
                             child: Text('Ok'),
                           ),
@@ -233,7 +246,7 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                     );
                   },
                   child: MainBtnWidget(
-                      colorBtn: Colors.green,
+                      colorBtn: kColorsPurple,
                       textBtn: 'Buy',
                       isTransparent: false,
                       haveIcon: false),
@@ -278,9 +291,9 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                     );
                   },
                   child: MainBtnWidget(
-                      colorBtn: Colors.red,
+                      colorBtn: kColorsRed,
                       textBtn: 'Delete',
-                      isTransparent: false,
+                      isTransparent: true,
                       haveIcon: false),
                 ),
               ],

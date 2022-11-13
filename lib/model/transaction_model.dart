@@ -9,6 +9,7 @@ class Transaction {
   final TransactionType? type;
   final String buyerUid;
   final String? productUid;
+  final String date;
   final String time;
   final double price;
   final String? transactionID;
@@ -30,14 +31,16 @@ class Transaction {
       {required this.buyerUid,
       required this.price,
       required this.type,
+      required this.date,
       required this.time,
       this.productUid,
       this.transactionID});
 
   Transaction.fromMap({required Map<String, dynamic> transactionMap})
       : buyerUid = transactionMap['buyerUid'],
-        price = transactionMap['price'],
+        price = transactionMap['price'].toDouble(),
         type = getTransactionType(transactionMap['type']),
+        date = transactionMap['date'],
         time = transactionMap['time'],
         productUid = transactionMap['productUid'] ?? '',
         transactionID = transactionMap['transactionID'] ?? '';
@@ -46,6 +49,7 @@ class Transaction {
         'buyerUid': buyerUid,
         'price': price,
         'type': type?.name.toString(),
+        'date': date,
         'time': time,
         'productUid': productUid ?? '',
         'transactionID': transactionID ?? '',

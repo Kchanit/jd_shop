@@ -45,23 +45,13 @@ class _MarkerPageState extends State<MarkerPage> {
             type_picked_list!.clear();
             int i = 0;
             while (i < item!.length) {
-              print(item![i]!.type!.name.toString());
-              print(item![i].runtimeType);
-              print(type_picked);
-              print((item![i]!.type!.name.toString()).compareTo(type_picked!));
-              print('=============');
               if ((item![i]!.type!.name.toString()).compareTo(type_picked!) ==
                   0) {
                 Product pd = item![i]!;
                 type_picked_list!.add(pd);
-                print(pd);
-                print(type_picked_list);
-                print('------------');
               }
               i++;
             }
-
-            print(type_picked_list);
           }
           return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
