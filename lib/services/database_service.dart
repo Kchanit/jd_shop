@@ -56,6 +56,13 @@ class DatabaseService {
           .map((doc) => Product.fromMap(productMap: doc.data()))
           .toList());
 
+  Stream<List<tran.Transaction>> getStreamListTransaction() => _firebaseStore
+      .collection('transactions')
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map((doc) => tran.Transaction.fromMap(transactionMap: doc.data()))
+          .toList());
+
   Future<void> addProduct({required Product product}) async {
     // final docProduct = _firebaseStore.collection('products').doc();
     // final Map<String, dynamic> productInfo = product.toMap();
@@ -68,17 +75,18 @@ class DatabaseService {
             .update({'uid': '${documentSnapshot.id}'}));
   }
 
- Future<void> updateProductFromUid({required uid, required Product newProduct}) async {
+  Future<void> updateProductFromUid(
+      {required uid, required Product newProduct}) async {
     final docProduct = _firebaseStore.collection('products').doc(uid);
     // final newProductInfo = product.toMap();
 
     // docProduct.set(newProductInfo);
-    
-    docProduct.update({'name' : '${newProduct.name}'});
-    docProduct.update({'price' : '${newProduct.price}'});
-    docProduct.update({'quantity' : '${newProduct.quantity}'});
-    docProduct.update({'description' : '${newProduct.description}'});
-    docProduct.update({'photoURL' : '${newProduct.photoURL}'});
+
+    docProduct.update({'name': '${newProduct.name}'});
+    docProduct.update({'price': '${newProduct.price}'});
+    docProduct.update({'quantity': '${newProduct.quantity}'});
+    docProduct.update({'description': '${newProduct.description}'});
+    docProduct.update({'photoURL': '${newProduct.photoURL}'});
   }
 
   Future<void> deleteProduct({required Product product}) async {
@@ -89,8 +97,14 @@ class DatabaseService {
 
   //transaction
   Future<void> addTransaction({required tran.Transaction transaction}) async {
-    final docTransaction = _firebaseStore.collection('transactions').doc();
-    final Map<String, dynamic> transactionInfo = transaction.toMap();
-    await docTransaction.set(transactionInfo);
+    // final docTransaction = _firebaseStore.collection('transactions').doc();
+    // final Map<String, dynamic> transactionInfo = transaction.toMap();
+    // await docTransaction.set(transactionInfo);
+
+    _firebaseStore.collection('transactions').add(transaction.toMap()).then(
+        (documentSnapshot) => _firebaseStore
+            .collection('transactions')
+            .doc('${documentSnapshot.id}')
+            .update({'transactionID': '${documentSnapshot.id}'}));
   }
 }

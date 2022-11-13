@@ -359,10 +359,10 @@ class _AddProductScreenState extends State<AddProductScreen> {
     showSnackBar('Add product successful.', backgroundColor: Colors.green);
     Navigator.of(context).pop();
   }
-  setProductUid(){
-    String unixTime = DateTime.now().toUtc().millisecondsSinceEpoch.toString();
-    var name = productName!.replaceAll(' ', '');
-    final id = '${name}${unixTime}';
-    return id;
-  }
+  // setProductUid(){
+  //   String unixTime = DateTime.now().toUtc().millisecondsSinceEpoch.toString();
+  //   var name = productName!.replaceAll(' ', '');
+  //   final id = '${name}${unixTime}';
+  //   return id;
+  // }
 }

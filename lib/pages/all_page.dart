@@ -22,7 +22,7 @@ class _AllPageState extends State<AllPage> {
 
     return Scaffold(
         body: Padding(
-      padding: const EdgeInsets.all(6.0),
+      padding: const EdgeInsets.all(3.0),
       child: StreamBuilder<List<Product?>>(
         stream: databaseService.getStreamListProduct(),
         builder: ((context, snapshot) {

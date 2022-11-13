@@ -200,19 +200,15 @@ class _ProductInfoScreenState extends State<ProductInfoScreen> {
                                   Provider.of<DatabaseService>(context,
                                       listen: false);
                               String datetime = DateTime.now().toString();
-                              String unixTime = DateTime.now()
-                                  .toUtc()
-                                  .millisecondsSinceEpoch
-                                  .toString();
+
                               String name = user!.username.replaceAll(" ", "");
                               final newTransaction = Transaction(
                                 buyerUid: user!.uid,
                                 price: product.price,
                                 type: Transaction.getTransactionType(
                                     transactionCategory!),
+                                productUid: product.uid,
                                 time: datetime,
-                                transactionID:
-                                    '${name}${product.price}${unixTime}',
                               );
                               databaseService.addTransaction(
                                   transaction: newTransaction);

@@ -1,26 +1,21 @@
-# jd_shop
+# Welcome to JD_Shop!
+JD_Shop คือ แอปพลิเคชันร้านค้าสำหรับขายเครื่องเขียน
 
-A new Flutter project.
+## รายชื่อสมาชิก
+- นายชนิตพล โลหะมงคล คีน
+- นางสาวธัญมาศ ฉันเจริญ แทท
+- นายอุรวิศ เจียรจินดา แตม
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
-
-
-ระบบที่ทำเพิ่ม
--withdraw
--transaction
--role (user/admin)
--hide password (login_screen)
--product option
--delete product by admin
--edit product info by admin
+## ระบบที่ทำเพิ่ม
+- withdraw
+- transaction
+  - buy
+  - deposit
+  - withdraw
+- role (user/admin)
+	- admin account: admin@gmail.com
+	- admin password: 123456
+- hide password (login_screen)
+- product option (home_screen)
+- delete product by admin
+- edit product info by admin

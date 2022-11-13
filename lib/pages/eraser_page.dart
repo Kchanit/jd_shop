@@ -25,7 +25,7 @@ class _EraserPageState extends State<EraserPage> {
 
     return Scaffold(
         body: Padding(
-      padding: const EdgeInsets.all(6.0),
+      padding: const EdgeInsets.all(3),
       child: StreamBuilder<List<Product?>>(
         stream: databaseService.getStreamListProduct(),
         builder: ((context, snapshot) {
