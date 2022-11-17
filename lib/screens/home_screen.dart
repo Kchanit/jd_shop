@@ -137,7 +137,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 icon: SvgPicture.asset('assets/icons/add.svg')),
           ),
           IconButton(
-              onPressed: () {}, icon: SvgPicture.asset('assets/icons/msg.svg')),
+              onPressed: () {
+                Navigator.pushNamed(context, '/test');
+              }, icon: SvgPicture.asset('assets/icons/msg.svg')),
           IconButton(
               onPressed: () {
                 Navigator.pushNamed(context, '/profile-screen');

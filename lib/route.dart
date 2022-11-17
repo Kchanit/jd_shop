@@ -7,6 +7,7 @@ import 'package:jd_shop/screens/login_screen.dart';
 import 'package:jd_shop/screens/product_info_screen.dart';
 import 'package:jd_shop/screens/profile_screen.dart';
 import 'package:jd_shop/screens/register_screen.dart';
+import 'package:jd_shop/screens/test_screen.dart';
 import 'package:jd_shop/screens/top_up_screen.dart';
 import 'package:jd_shop/screens/transaction_screen.dart';
 import 'package:jd_shop/screens/withdraw_screen.dart';
@@ -23,6 +24,8 @@ final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
   "/register" : (BuildContext context) => RegisterScreen(),
   "/google-register" : (BuildContext context) => GoogleRegisterScreen(),
   "/edit-product" : (BuildContext context) => EditProductScreen(),
+  "/test" : (BuildContext context) => TestScreen(),
+
 
   
 };

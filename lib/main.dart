@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:jd_shop/route.dart';
 import 'package:jd_shop/services/auth_service.dart';
 import 'package:jd_shop/services/database_service.dart';
@@ -45,6 +46,11 @@ class MyApp extends StatelessWidget {
         scaffoldMessengerKey: messageKey,
         debugShowCheckedModeBanner: false,
         theme: appTheme(),
+      //   theme: NeumorphicThemeData(
+      //   baseColor: Color(0xFFFFFFFF),
+      //   lightSource: LightSource.topLeft,
+      //   depth: 10,
+      // ),
         initialRoute: "/login",
         routes: routes,
       ),
